@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Grade Calculator</title>
+  <link rel="stylesheet" href="https://pyscript.net/releases/2025.7.3/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2025.7.3/core.js"></script>
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f6f8;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border: 3px solid #4CAF50;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+    input {
+      width: 90%;
+      padding: 6px;
+      margin: 5px 0 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form id="gradeForm" onsubmit="return false;">
+      <h2>Student Grade Calculator</h2>
+
+      <label for="fname">First Name:</label><br />
+      <input type="text" id="fname" /><br />
+
+      <label for="lname">Last Name:</label><br />
+      <input type="text" id="lname" /><br />
+
+      <label for="science">Science Grade:</label><br />
+      <input type="number" id="science" /><br />
+
+      <label for="math">Mathematics Grade:</label><br />
+      <input type="number" id="math" /><br />
+
+      <label for="english">English Grade:</label><br />
+      <input type="number" id="english" /><br />
+
+      <label for="history">History Grade:</label><br />
+      <input type="number" id="history" /><br />
+
+      <label for="pe">PE Grade:</label><br />
+      <input type="number" id="pe" /><br /><br />
+
+      <button id="calcBtn" type="button">Calculate GWA</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <py-script>
+from js import document
+
+def calculate(event=None):
+    fname = document.getElementById("fname").value
+    lname = document.getElementById("lname").value
+
+    subjects = ["Science", "Mathematics", "English", "History", "PE"]
+    units = (3, 3, 3, 2, 1)
+
+    try:
+        grades = [
+            float(document.getElementById("science").value),
+            float(document.getElementById("math").value),
+            float(document.getElementById("english").value),
+            float(document.getElementById("history").value),
+            float(document.getElementById("pe").value)
+        ]
+
+        total_units = sum(units)
+        weighted_sum = sum(g * u for g, u in zip(grades, units))
+        gwa = round(weighted_sum / total_units, 2)
+
+        result_html = f"""
+        <div style='background-color:#e8f5e9; padding:10px; border:2px solid green; border-radius:8px;'>
+            <h3>Student Information</h3>
+            <p><b>Name:</b> {fname} {lname}</p>
+            <h4>Summary of Grades:</h4>
+            <ul>
+                {''.join(f'<li>{s}: {g}</li>' for s, g in zip(subjects, grades))}
+            </ul>
+            <h4>General Weighted Average (GWA):</h4>
+            <p><b>{gwa}</b></p>
+        </div>
+        """
+        document.getElementById("result").innerHTML = result_html
+    except ValueError:
+        document.getElementById("result").innerHTML = '<p style="color:red;">Please fill in all grades with numbers.</p>'
+  </py-script>
+
+  <script>
+    // Wait for PyScript to load before adding the event listener
+    document.addEventListener("pyscriptload", () => {
+      document.getElementById("calcBtn").addEventListener("click", () => {
+        pyscript.runtime.globals.get("calculate")();
+      });
+    });
+  </script>
+</body>
+</html>
